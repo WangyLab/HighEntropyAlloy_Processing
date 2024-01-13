@@ -220,51 +220,50 @@ def merge_symmetric_combinations_with_count(combinations):
 
     return combination_counts
 
-for i in range(1, 2):
-    final_info_100, metals_100, elements_100 = get_structs(f'{i}')
-    # 100组结构的最终信息 | 多个dict
-    summary_dicts_all = []
-    for idx, info in enumerate(final_info_100):
-        names = info[0]
-        compounds_xyz = info[1]
-        unique_structures = {}
+final_info_100, metals_100, elements_100 = get_structs('.')
+# 100组结构的最终信息 | 多个dict
+summary_dicts_all = []
+for idx, info in enumerate(final_info_100):
+    names = info[0]
+    compounds_xyz = info[1]
+    unique_structures = {}
 
-        for i in range(len(compounds_xyz)):
-            for j in range(i + 1, len(compounds_xyz)):
-                if len(compounds_xyz[i]) == len(compounds_xyz[j]):
-                    if all(any(np.array_equal(i_elem, k_elem) for k_elem in compounds_xyz[j]) for i_elem in
-                           compounds_xyz[i]) \
-                            and all(any(np.array_equal(k_elem, i_elem) for i_elem in compounds_xyz[i]) for k_elem in
-                                    compounds_xyz[j]):
-                        structure_key = tuple(map(tuple, compounds_xyz[j]))
-                        if structure_key not in unique_structures:
-                            unique_structures[structure_key] = names[j]
-        unordered_xyz = [list(map(np.array, key)) for key in unique_structures]
+    for i in range(len(compounds_xyz)):
+        for j in range(i + 1, len(compounds_xyz)):
+            if len(compounds_xyz[i]) == len(compounds_xyz[j]):
+                if all(any(np.array_equal(i_elem, k_elem) for k_elem in compounds_xyz[j]) for i_elem in
+                        compounds_xyz[i]) \
+                        and all(any(np.array_equal(k_elem, i_elem) for i_elem in compounds_xyz[i]) for k_elem in
+                                compounds_xyz[j]):
+                    structure_key = tuple(map(tuple, compounds_xyz[j]))
+                    if structure_key not in unique_structures:
+                        unique_structures[structure_key] = names[j]
+    unordered_xyz = [list(map(np.array, key)) for key in unique_structures]
         # unordered_name = list(unique_structures.values())
 
         # 重新设计元素组合顺序
-        all_name = []
-        for compound in unordered_xyz:
-            atom1 = compound[0]
-            atom2 = compound[1]
-            atom3 = compound[3]
-            atom4 = compound[2]
-            name = find_name(atom1, metals_100[idx], elements_100[idx]) + find_name(atom2, metals_100[idx],
-                                                                                    elements_100[idx]) + find_name(
-                atom3, metals_100[idx], elements_100[idx]) + find_name(atom4, metals_100[idx], elements_100[idx])
-            all_name.append(name)
+    all_name = []
+    for compound in unordered_xyz:
+        atom1 = compound[0]
+        atom2 = compound[1]
+        atom3 = compound[3]
+        atom4 = compound[2]
+        name = find_name(atom1, metals_100[idx], elements_100[idx]) + find_name(atom2, metals_100[idx],
+                                                                                elements_100[idx]) + find_name(
+            atom3, metals_100[idx], elements_100[idx]) + find_name(atom4, metals_100[idx], elements_100[idx])
+        all_name.append(name)
 
-        summary_dict = merge_symmetric_combinations_with_count(all_name)  # 当下结构的info
-        summary_dicts_all.append(summary_dict)  # 添加到总list中
+    summary_dict = merge_symmetric_combinations_with_count(all_name)  # 当下结构的info
+    summary_dicts_all.append(summary_dict)  # 添加到总list中
 
-    file_path = "out100.csv"
+file_path = "out100.csv"
     # 写入CSV
-    with open(file_path, mode='w', newline='', encoding='utf-8') as file:
-        writer = csv.writer(file)
+with open(file_path, mode='w', newline='', encoding='utf-8') as file:
+    writer = csv.writer(file)
 
         # 写入每个字典的键值对
-        for i, d in enumerate(summary_dicts_all):
-            for key, value in d.items():
-                writer.writerow([i, key, value])
+    for i, d in enumerate(summary_dicts_all):
+        for key, value in d.items():
+            writer.writerow([i, key, value])
 
-    print("CSV文件已保存")
+print("CSV文件已保存")
