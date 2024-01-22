@@ -1,22 +1,23 @@
-import pandas as pd
-import numpy as np
+import csv
+from itertools import product
 
-num_rows = 100000
-num_columns = 5
+def generate_combinations(target_sum, min_val, max_val, num_elements):
+    for values in product(range(min_val, max_val + 1), repeat=num_elements):
+        if sum(values) == target_sum:
+            yield values
+
+# 设置参数
 target_sum = 60
+min_val, max_val = 3, 21
+num_elements = 5
 
-def generate_row_no_zero(target_sum, num_columns):
-    while True:
-        # Generate random integers between 1 and target_sum-1 (to avoid zeros)
-        row = np.random.randint(1, target_sum, size=num_columns - 1)
-        last_value = target_sum - sum(row)
-        # Check if the last value is positive and non-zero
-        if last_value > 0:
-            row = np.append(row, last_value)
-            np.random.shuffle(row)
-            return row
+# 输出文件路径
+output_file = 'combinations.csv'
 
-rows_no_zero = [generate_row_no_zero(target_sum, num_columns) for _ in range(num_rows)]
-df_sum_60_no_zero = pd.DataFrame(rows_no_zero, columns=[f'Column_{i+1}' for i in range(num_columns)])
+# 使用生成器产生组合并存储到CSV文件中
+with open(output_file, mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(['A', 'B', 'C', 'D', 'E'])  # 写入表头
 
-df_sum_60_no_zero.to_csv('sum_60.csv')
+    for combination in generate_combinations(target_sum, min_val, max_val, num_elements):
+        writer.writerow(combination)
