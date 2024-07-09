@@ -5,7 +5,6 @@ import pandas as pd
 df = pd.read_csv('out100.csv', header=None)
 struct_num = set([num for num in df[0]])
 
-# 100个结构的字典的总list
 all_dict = []
 for num in range(100):
     filtered_df = df[df[0] == num]
