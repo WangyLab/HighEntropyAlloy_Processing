@@ -17,8 +17,8 @@ def get_atom_dict(data):
 
 def get_distance(a, b, size):
     distance = np.abs(a - b)  # Get the distance between metal 'a' and each metal in [b]
-    distance = np.min([distance, size - distance], axis=0)  # Compare the actual distance and the periodic distance and take the minimum value
-    distance = (distance ** 2).sum(axis=-1) ** 0.5  # Get the Euclidean distance between the two metals
+    distance = np.min([distance, size - distance], axis=0)
+    distance = (distance ** 2).sum(axis=-1) ** 0.5
     distance = distance.tolist()
     return distance
 
@@ -65,32 +65,29 @@ def get_structs(direct):
             # if time < 1000000:  # Determine whether reached the total steps
             #     continue
 
-            # 盒子边界
             size = lines[i - 3].split()
             size = float(size[1]) - float(size[0]) # Side length of the lattice, cubic box
 
             atoms = lines[i + 1:i + num + 1]  # Locating the atomic information of the last step
-            metals, elements = [], []  # [metals] contains the coordinate information of the metal, and [elements] is the string of the metal
+            metals, elements = [], []
 
-            # 识别金属与获取坐标
             for atom in atoms:
                 atom = atom.split()  # index: 0 is the atom number, 1 is the atom type, 2-4 corresponds to x, y, z
-                element = atom_dict[atom[1]]  # Get the atomic type of atom | element string
+                element = atom_dict[atom[1]]
                 if element in Metal:
                     elements.append(element)
                     metals.append(atom[-3:])
 
-            metals = np.array(metals).astype(float)  # shape: (90, 3), each row corresponds to the coordinate information of a metal atom
-            elements = np.array(elements)  # shape: (90,), contains all metal elements
+            metals = np.array(metals).astype(float)  # shape: (90, 3)
+            elements = np.array(elements)  # shape: (90,)
 
-            name=[]  # Final combination's name
-            compounds_xyz = []  # Final combination's xyz
+            name=[]
+            compounds_xyz = []
 
-
-            for index,metal in enumerate(metals):  # (metal) is the coordinates of each metal | array | array
-                distances=get_distance(metal, metals, size)  # Get the Euclidean distance between the metal and all metals
+            for index,metal in enumerate(metals):
+                distances=get_distance(metal, metals, size)
                 for id,dis in enumerate(distances):
-                    distances[id]=[dis,id] # distance，metal's index | distance: [[0.0, 0], [4.142241729426229, 1], [3.768254835689859, 2]]
+                    distances[id]=[dis,id] # distance: [[0.0, 0], [4.142241729426229, 1], [3.768254835689859, 2]]
                 distances=np.array(distances)
                 neighbor = distances[np.argsort(distances[:, 0])] # Sort by distance，[distance，index], array | shape: (90, 2)
 
