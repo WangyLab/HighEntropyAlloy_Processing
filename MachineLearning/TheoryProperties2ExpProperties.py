@@ -7,7 +7,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 import joblib
 
-input_data = pd.read_csv('diedai.csv')
+input_data = pd.read_csv('PredTheoryProperites&ExpData.csv')
 y = input_data.iloc[:, 8]
 x = input_data.iloc[:, [0,1,2,3,5,6,7]]
 min_max_scaler = MinMaxScaler(feature_range=(0, 1))
