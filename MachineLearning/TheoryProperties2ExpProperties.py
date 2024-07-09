@@ -1,8 +1,4 @@
 import pandas as pd
-# Task1 | base pred G_ad
-
-input_data = pd.read_csv('diedai.csv')
-
 import numpy as np
 from pandas import DataFrame
 import matplotlib.pyplot as plt
@@ -11,6 +7,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import RandomForestRegressor,ExtraTreesRegressor,GradientBoostingRegressor
 from sklearn.inspection import permutation_importance
 
+input_data = pd.read_csv('diedai.csv')
 y=input_data.iloc[:,8]
 x=input_data.iloc[:,[0,1,2,3,5,6,7]]
 
